@@ -1,0 +1,473 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>LMS Metode Numerik</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{--bg:#f5f6fb;--card:#fff;--tx:#1d2140;--mu:#5d6385;--pr:#2e3192;--pl:#e8e9fb;--ok:#0f8a4f;--okb:#e0f6ea;--no:#c0392b;--nob:#fdeaea;--bd:#dfe1ef;--ac:#f5b700;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#12142b;--card:#1b1e3d;--tx:#eceefc;--mu:#a2a8d0;--pr:#8f94ff;--pl:#262a54;--ok:#4cd68c;--okb:#12382a;--no:#ff8b7d;--nob:#40201f;--bd:#32366a;color-scheme:dark}}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}html{scroll-padding-top:60px}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+header{background:var(--pr);color:#fff;padding:18px 16px 16px}
+@media (prefers-color-scheme:dark){header{background:#262a6e}}
+header h1{margin:0;font-size:1.25rem}header p{margin:4px 0 0;opacity:.85;font-size:.85rem}
+main{max-width:760px;margin:0 auto;padding:14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px 16px;margin:0 0 12px}
+h2{font-size:1.1rem;margin:0 0 6px}h3{font-size:1rem;margin:14px 0 4px;color:var(--pr)}
+details.card summary{cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:8px}
+details.card summary::after{content:"＋";color:var(--pr)}details[open].card summary::after{content:"－"}
+.f{background:var(--pl);border-left:4px solid var(--pr);padding:8px 12px;border-radius:8px;margin:8px 0;font-family:Cambria,"Times New Roman",serif;font-size:1.08rem;overflow-x:auto;white-space:nowrap}
+.note{background:#fff8dc;color:#4a3b00;border-left:4px solid var(--ac);padding:8px 12px;border-radius:8px;margin:8px 0;font-size:.92rem}
+.tw{overflow-x:auto;margin:8px 0}table{border-collapse:collapse;width:100%;font-size:.85rem;min-width:420px}
+th,td{border:1px solid var(--bd);padding:5px 8px;text-align:center}th{background:var(--pl)}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--bd);display:flex;padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+nav button{flex:1;border:0;background:none;color:var(--mu);padding:10px 4px;font:600 .78rem system-ui;cursor:pointer}
+nav button b{display:block;font-size:1.3rem}nav button.on{color:var(--pr)}
+.sec{display:none}.sec.on{display:block}
+.btn{background:var(--pr);color:#fff;border:0;border-radius:10px;padding:9px 14px;font:600 .9rem system-ui;cursor:pointer;margin:4px 4px 4px 0}
+.btn.s{background:var(--pl);color:var(--pr)}
+.opt{display:block;width:100%;text-align:left;background:var(--card);color:var(--tx);border:1.5px solid var(--bd);border-radius:10px;padding:10px 12px;margin:6px 0;font:inherit;cursor:pointer}
+.opt.ok{border-color:var(--ok);background:var(--okb)}.opt.no{border-color:var(--no);background:var(--nob)}
+.exp{display:none;margin-top:8px;font-size:.92rem;background:var(--pl);padding:8px 12px;border-radius:8px}.exp.show{display:block}
+.tag{display:inline-block;background:var(--pl);color:var(--pr);border-radius:20px;padding:1px 10px;font-size:.75rem;font-weight:700;margin-right:6px}
+input[type=text]{border:1.5px solid var(--bd);border-radius:10px;padding:9px 10px;font:inherit;background:var(--card);color:var(--tx);width:150px;max-width:55%}
+.sol{display:none;margin-top:10px;border-top:1px dashed var(--bd);padding-top:8px;font-size:.95rem}.sol.show{display:block}
+.fb{font-weight:700;margin-left:6px}.score{font-weight:700;color:var(--pr)}
+</style>
+<style>*{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif!important;letter-spacing:0!important}.f,.f *{font-family:Cambria,"Times New Roman",serif!important}body{font-size:16px!important;line-height:1.65!important}h2,summary,.ttl,nav button,.tag,.btn{font-weight:700}nav button{font-size:.72rem!important}.tag{font-size:.72rem!important}header h1{font-size:1.35rem!important}</style>
+<style>
+:root,:root:not([data-theme=light]){--bg:#E9E6DA;--card:#F0F0F0;--tx:#333;--mu:#666;--pr:#00FF00;--pl:#E2E2E2;--bd:#CCC;--ok:#0B6B0B;--okb:#00FF00;--no:#333;--nob:#CCC;color-scheme:light}
+body{font-family:'Pixelify Sans',ui-monospace,Menlo,Consolas,monospace;font-size:17px;line-height:1.5;background:var(--bg);color:#333}
+header,header:not(x){background:var(--bg);color:#333;border-bottom:2px solid #333;padding:16px}
+header h1{font-family:Silkscreen,'Pixelify Sans',monospace;font-size:1.45rem;text-transform:uppercase;line-height:1.2;letter-spacing:1px}
+header p{opacity:1;color:#666;text-transform:uppercase;font-size:.78rem;border-top:2px dotted #666;padding-top:6px;margin-top:8px}
+.card{border:2px solid #333;border-radius:0;background:var(--card);box-shadow:4px 4px 0 #CCC}
+h2{font-family:Silkscreen,monospace;text-transform:uppercase;font-size:.95rem;letter-spacing:.5px}
+h3{color:#333;font-weight:700;border-bottom:2px dotted #666;padding-bottom:2px}
+details.card{padding:0}
+details.card>summary{padding:10px 14px;background:#CCC;font-family:Silkscreen,monospace;font-size:.8rem;text-transform:uppercase}
+details.card>summary::after{content:'[+]';color:#333}details[open].card>summary::after{content:'[-]'}
+details[open].card>summary{border-bottom:2px solid #333}
+details.card>*:not(summary){margin-left:14px;margin-right:14px}details.card>*:last-child{margin-bottom:14px}
+.f{background:#fff;border:2px solid #333;border-left:8px solid #00FF00;border-radius:0}
+.note{background:#fff;border:2px solid #333;border-left:8px solid #333;border-radius:0;color:#333}
+th{background:#CCC;border:1px solid #333}td{border:1px solid #999}
+.btn{background:#00FF00;color:#333;border:2px solid #333;border-radius:0;font-family:inherit;text-transform:uppercase;box-shadow:2px 2px 0 #333;padding:8px 12px}
+.btn::before{content:'[ '}.btn::after{content:' ]'}.btn:hover,.btn:focus-visible{background:#9DFF9D;outline:3px solid #00FF00;outline-offset:1px}.btn:active{box-shadow:none;transform:translate(2px,2px)}
+.btn.s{background:#F0F0F0;color:#333}
+.opt{border:2px solid #333;border-radius:0;background:#fff;color:#333}.opt:hover{background:#E2FFE2}
+.opt.ok{background:#00FF00;border-color:#333}.opt.no{background:#CCC;border-style:dashed;text-decoration:line-through}
+.exp,.sol{background:#fff;border:2px dashed #333;border-radius:0;padding:8px 12px}.sol{border-top:2px dashed #333}
+.tag{border:2px solid #333;background:#fff;color:#333;border-radius:20px;font-family:Silkscreen,monospace;font-size:.62rem}
+input[type=text]{border:2px solid #333;border-radius:0;background:#fff;color:#333;font-family:inherit}input[type=text]:focus{outline:3px solid #00FF00}
+.score{color:#333;background:#00FF00;padding:0 6px}
+nav{background:#F0F0F0;border-top:2px solid #333}
+nav button{display:flex;flex-direction:column;align-items:center;gap:2px;font-family:Silkscreen,monospace;text-transform:uppercase;font-size:.6rem;color:#666;border-top:4px solid transparent}
+nav button b{display:none}nav svg{width:22px;height:22px;display:block}
+nav button.on{background:#00FF00;color:#333;border-top-color:#333}
+.pb{height:24px;border:2px solid #333;background:#fff;padding:2px;margin:8px 0}
+.pb>span{display:block;height:100%;background:#00FF00 repeating-linear-gradient(90deg,transparent 0 6px,rgba(51,51,51,.25) 6px 8px);transition:width .4s steps(10)}
+.big{font-family:Silkscreen,monospace;font-size:2.4rem;line-height:1}
+.row{display:flex;align-items:center;gap:10px}.row svg{width:26px;height:26px;flex:none}.row>div{flex:1;min-width:0}
+.row small{color:#666;text-transform:uppercase}
+.ttl{background:#CCC;margin:-14px -16px 10px;padding:8px 14px;border-bottom:2px solid #333;font-family:Silkscreen,monospace;font-size:.8rem;text-transform:uppercase}
+@property --p{syntax:'<percentage>';inherits:true;initial-value:0%}
+header{background-color:#E9E6DA;background-image:linear-gradient(#DAD6C7 2px,transparent 2px),linear-gradient(90deg,#DAD6C7 2px,transparent 2px);background-size:8px 8px;border-bottom:4px solid #333;box-shadow:0 4px 0 #CCC;padding:18px 16px 14px}
+.stage{position:relative;height:48px;margin:0 0 4px;padding:0;--p:0%;animation:run 12s linear infinite}
+.lay{position:absolute;inset:0;display:flex;align-items:center;white-space:nowrap;font-family:Silkscreen,ui-monospace,Menlo,monospace!important;font-weight:700;font-size:clamp(1.2rem,7vw,2.2rem);text-transform:uppercase;color:#333}
+.a{justify-content:center;clip-path:inset(0 0 0 var(--p))}
+.b{justify-content:center;clip-path:inset(0 calc(100% - var(--p)) 0 0)}
+.pac{position:absolute;top:50%;left:var(--p);width:34px;height:34px;margin:-17px 0 0 -17px;filter:drop-shadow(2px 0 0 #333) drop-shadow(-2px 0 0 #333) drop-shadow(0 2px 0 #333) drop-shadow(0 -2px 0 #333)}
+.pac i{display:block;position:absolute;inset:0;animation:face 12s steps(1) infinite}
+.pac svg{position:absolute;inset:0;width:100%;height:100%}
+.pac .o{animation:ch .36s steps(1) infinite}.pac .c{animation:ch .36s steps(1) infinite reverse}
+@keyframes run{0%,8%{--p:0%}44%,56%{--p:100%}92%,100%{--p:0%}}
+@keyframes face{0%,49.99%{transform:scaleX(1)}50%,91.99%{transform:scaleX(-1)}92%,100%{transform:scaleX(1)}}
+@keyframes ch{0%{opacity:1}50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.stage{animation:none}.pac,.b{display:none}}
+</style>
+<style>
+/* ===== Enhancement layer: smooth motion everywhere ===== */
+:root{--ease:cubic-bezier(.2,.8,.2,1);--spring:cubic-bezier(.34,1.45,.5,1)}
+main{padding:14px max(16px,env(safe-area-inset-right,0px)) 14px max(16px,env(safe-area-inset-left,0px))}
+header{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+nav{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+#bg{position:fixed;inset:-24px;z-index:-1;pointer-events:none;background-image:radial-gradient(#D2CEBE 1.6px,transparent 1.8px);background-size:24px 24px;animation:drift 30s linear infinite}
+@keyframes drift{to{transform:translate(24px,24px)}}
+#sp{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:5px;background:#00FF00;border-bottom:2px solid #333;transform:scaleX(0);transform-origin:left;z-index:30;pointer-events:none;transition:transform .15s linear}
+header h1{animation:run 12s linear infinite,hdrIn .8s var(--ease) both}
+@keyframes hdrIn{from{opacity:0;transform:translateY(-10px)}}
+.sec.on{animation:secIn .45s var(--ease) both}
+@keyframes secIn{from{opacity:0}}
+.card{transition:transform .3s var(--ease),box-shadow .3s var(--ease),background-color .3s}
+@media (hover:hover){.card:not(details):hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #BDBDBD}}
+.card.pre{opacity:0;transform:translateY(22px) scale(.985);transition:opacity .6s var(--ease),transform .7s var(--ease)}
+.card.pre.in{opacity:1;transform:none}
+details.card>summary{transition:background-color .25s;user-select:none}
+@media (hover:hover){details.card>summary:hover{background:#CFFFCF}}
+details.card>summary::after{display:inline-block;transition:transform .3s var(--spring)}
+details.card summary:active::after{transform:scale(1.4)}
+details[open].card>*:not(summary){animation:fadeUp .5s var(--ease) both}
+details[open].card>*:not(summary):nth-child(2){animation-delay:.04s}
+details[open].card>*:not(summary):nth-child(3){animation-delay:.08s}
+details[open].card>*:not(summary):nth-child(4){animation-delay:.12s}
+details[open].card>*:not(summary):nth-child(n+5){animation-delay:.16s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}}
+.btn,.opt,nav button{position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.btn{transition:transform .2s var(--ease),box-shadow .2s var(--ease),background-color .2s}
+@media (hover:hover){.btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 #333}}
+.btn:active,.btn:active:hover{box-shadow:none;transform:translate(2px,2px)}
+.opt{transition:transform .25s var(--ease),background-color .25s,border-color .25s,opacity .3s}
+@media (hover:hover){.opt:hover{transform:translateX(4px)}}
+.card[data-done] .opt{cursor:default;transform:none}
+.card[data-done] .opt:not(.ok):not(.no){opacity:.5}
+.opt.ok{animation:pop .5s var(--spring)}
+.opt.no{animation:shake .45s var(--ease)}
+@keyframes pop{0%{transform:scale(.96)}60%{transform:scale(1.025)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}45%{transform:translateX(6px)}70%{transform:translateX(-3px)}}
+.exp.show,.sol.show{animation:drop .5s var(--ease) both}
+@keyframes drop{from{opacity:0;transform:translateY(-8px)}}
+.fb.pop{display:inline-block;animation:pop .5s var(--spring)}
+.score.pop{display:inline-block;animation:pop .55s var(--spring)}
+input.nope{animation:shake .45s var(--ease)}
+input[type=text]{transition:box-shadow .2s,outline-color .2s}
+.pb>span{transition:width 1s var(--ease)}
+.big{display:inline-block}
+tr{transition:background-color .2s}
+@media (hover:hover){tbody tr:hover td{background:#F1FFF1}}
+.rowin td{animation:rowin .8s var(--ease) both}
+@keyframes rowin{0%{opacity:0;transform:translateY(-8px);background:#00FF00}100%{background:transparent}}
+.f{transition:transform .25s var(--ease),box-shadow .25s}
+@media (hover:hover){.f:hover{transform:translateX(3px);box-shadow:3px 3px 0 #CCC}}
+nav button{z-index:1;transition:color .3s}
+nav button.on{background:transparent}
+nav button svg{transition:transform .35s var(--spring)}
+nav button.on svg{transform:translateY(-2px) scale(1.18)}
+#ind{position:absolute;left:0;top:0;bottom:0;width:25%;background:#00FF00;box-shadow:inset 0 4px 0 #333;transform:translateX(0);transition:transform .5s var(--spring);pointer-events:none}
+.rip{position:absolute;border-radius:50%;background:rgba(51,51,51,.2);transform:scale(0);animation:rip .6s var(--ease) forwards;pointer-events:none}
+@keyframes rip{to{transform:scale(1);opacity:0}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}#bg{display:none}}
+</style>
+<style>
+/* ===== Splash screen ===== */
+@property --l{syntax:'<percentage>';inherits:true;initial-value:0%}
+#splash{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px));background-color:#E9E6DA;background-image:linear-gradient(#DAD6C7 2px,transparent 2px),linear-gradient(90deg,#DAD6C7 2px,transparent 2px);background-size:16px 16px;border-bottom:6px solid #333;box-shadow:0 6px 0 #CCC;cursor:pointer;transition:transform .9s cubic-bezier(.7,0,.2,1),opacity .9s ease;text-align:center}
+#splash.out{transform:translateY(-104%);opacity:.6}
+#splash .tt{display:flex;justify-content:center;font-family:Silkscreen,ui-monospace,Menlo,monospace!important;font-weight:700;font-size:clamp(2rem,11.5vw,3.8rem);text-transform:uppercase;color:#333;line-height:1;text-shadow:3px 3px 0 #00FF00}
+#splash .tt span{display:inline-block;font-family:inherit!important;animation:hop 1.2s var(--ease) infinite both,letIn .6s var(--spring) both}
+@keyframes hop{0%,55%,100%{transform:translateY(0)}25%{transform:translateY(-14px)}}
+@keyframes letIn{from{opacity:0;transform:translateY(24px) scale(.6)}}
+#splash .sub{font-family:Silkscreen,monospace!important;text-transform:uppercase;font-size:.72rem;color:#666;border-top:2px dotted #666;padding-top:8px;animation:fadeUp .7s .5s var(--ease) both}
+#splash .trk{position:relative;width:min(340px,82vw);height:46px;border:3px solid #333;background:#fff;box-shadow:4px 4px 0 #CCC;overflow:hidden;--l:0%;animation:fillup 2.6s cubic-bezier(.5,.05,.35,1) .35s forwards}
+@keyframes fillup{to{--l:100%}}
+#splash .in{position:absolute;inset:0 16px}
+#splash .pel{position:absolute;inset:0;background:radial-gradient(circle,#333 3px,transparent 3.6px) 0 50%/22px 100% repeat-x;clip-path:inset(0 0 0 var(--l))}
+#splash .spac{position:absolute;top:50%;left:var(--l);width:30px;height:30px;margin:-15px 0 0 -15px;filter:drop-shadow(2px 0 0 #333) drop-shadow(-2px 0 0 #333) drop-shadow(0 2px 0 #333) drop-shadow(0 -2px 0 #333)}
+#splash .spac svg,#splash .gh svg{position:absolute;inset:0;width:100%;height:100%}
+#splash .spac .o{animation:ch .3s steps(1) infinite}#splash .spac .c{animation:ch .3s steps(1) infinite reverse}
+#splash .gh{position:absolute;top:50%;left:calc(var(--l) - 46px);width:26px;height:26px;margin:-13px 0 0 -13px;animation:bob .35s steps(2) infinite}
+@keyframes bob{50%{transform:translateY(-3px)}}
+#splash .pct{font-family:Silkscreen,monospace!important;text-transform:uppercase;font-size:.8rem;color:#333;min-height:3.2em}
+#splash .pct b{display:inline-block;background:#00FF00;padding:0 6px;border:2px solid #333;margin-right:8px;font-family:inherit!important;min-width:3.4em}
+#splash .msg{display:block;margin-top:10px;color:#666;font-size:.7rem;animation:fadeUp .4s var(--ease) both}
+#splash .skip{position:absolute;bottom:calc(20px + env(safe-area-inset-bottom,0px));font-family:Silkscreen,monospace!important;font-size:.6rem;color:#666;text-transform:uppercase;animation:blink 1.2s steps(2) infinite}
+@keyframes blink{50%{opacity:.25}}
+</style>
+<style>
+/* ===== Desktop: sidebar navigation + wide grid ===== */
+@media (min-width:900px){
+body{padding:0 0 0 232px}
+nav{top:0;right:auto;bottom:0;width:232px;flex-direction:column;padding:0;border-top:0;border-right:4px solid #333;box-shadow:4px 0 0 #CCC;z-index:40}
+nav::before{content:"omahcoding";flex:none;box-sizing:border-box;height:96px;display:flex;align-items:center;padding:0 24px;font-family:Silkscreen,ui-monospace,Menlo,monospace!important;font-weight:700;font-size:1.2rem;text-transform:uppercase;color:#333;text-shadow:2px 2px 0 #00FF00;border-bottom:3px solid #333;background-color:#E9E6DA;background-image:linear-gradient(#DAD6C7 2px,transparent 2px),linear-gradient(90deg,#DAD6C7 2px,transparent 2px);background-size:8px 8px}
+nav::after{content:"Review UTS Gasal 2025/2026";margin-top:auto;padding:18px 24px;font-family:Silkscreen,monospace!important;font-size:.6rem;text-transform:uppercase;color:#666;border-top:2px dotted #666}
+nav button{flex:none;height:64px;flex-direction:row;justify-content:flex-start;gap:16px;padding:0 24px;border-top:0;font-size:.85rem!important;text-align:left}
+nav button svg{width:26px;height:26px}
+@media (hover:hover){nav button:not(.on):hover{background:#E2FFE2}}
+#ind{left:0;right:0;width:auto;top:96px;bottom:auto;height:64px;box-shadow:inset 8px 0 0 #333;transform:translateY(calc(var(--i,0)*100%))!important}
+#sp{left:232px}
+header{padding:30px 48px 22px}
+header h1{height:64px}
+.lay{font-size:2.6rem}
+main{max-width:1080px;margin:0 auto;padding:32px 48px 64px}
+.sec.on{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+#home.on{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}
+#materi.on{grid-template-columns:minmax(0,1fr)}
+.sec .card{margin:0}
+#home>.card:first-child,#home>.card:last-child,#latihan>.card:first-child,#uts>.card:first-child{grid-column:1/-1}
+#home .big{font-size:3.4rem}
+.card{padding:18px 22px}
+.ttl{margin:-18px -22px 14px}
+details.card{padding:0}
+body{font-size:17px}
+}
+@media (min-width:1500px){main{max-width:1240px}}
+</style>
+<style>
+@media (min-width:900px){
+#home>.card:not(:first-child):not(:last-child){display:flex;flex-direction:column;gap:14px;padding:22px}
+#home .row{display:contents}
+#home .row svg{order:1;width:40px;height:40px;padding:6px;border:2px solid #333;background:#00FF00;box-sizing:content-box}
+#home .row>div{order:2;flex:none;font-size:1.05rem}
+#home .row>div b{font-family:Silkscreen,monospace!important;text-transform:uppercase;font-size:.95rem}
+#home .row small{display:block;margin-top:6px;line-height:1.5}
+#home .pb{order:3;margin:0}
+#home .row>button{order:4;align-self:flex-start;margin:0}
+#home>.card:first-child{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:36px;align-items:center}
+#home>.card:first-child .ttl{grid-column:1/-1}
+#home>.card:first-child .big{grid-row:2;font-size:4rem}
+#home>.card:first-child .pb{grid-row:2;margin:0}
+#home>.card:first-child small{grid-column:1/-1;margin-top:10px}
+}
+</style>
+<style>
+.fx{position:fixed;left:0;top:0;pointer-events:none;z-index:200;will-change:transform,opacity}
+.fx.ring{width:44px;height:44px;margin:-22px 0 0 -22px;border:3px solid #333;border-radius:50%;box-sizing:border-box}
+.fx.sq{width:9px;height:9px;margin:-4px 0 0 -4px;border:2px solid #333;background:#00FF00;box-sizing:border-box}
+.fx.sq.d{background:#333}
+.card:not(details):active{transform:scale(.985)!important;transition-duration:.12s}
+nav button:active svg{transform:scale(.8)}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@700&display=swap">
+
+<div id="splash" role="status" aria-label="Memuat omahcoding">
+<div class="tt" id="stt" aria-hidden="true"></div>
+<div class="sub">Metode Numerik · Review UTS</div>
+<div class="trk"><div class="in"><div class="pel"></div><span class="gh" id="sgh"></span><span class="spac" id="spc"></span></div></div>
+<div class="pct"><b id="spn">0%</b><span class="msg" id="smg">Menyalakan kalkulator...</span></div>
+<div class="skip">Ketuk untuk lewati</div>
+</div>
+<header><h1 class="stage" aria-label="Metode Numerik"><span class="lay a">Metode Numerik</span><span class="lay b">omahcoding</span><span class="pac" id="pac"></span></h1></header>
+<main>
+<section id="home" class="sec on"></section>
+<section id="materi" class="sec"></section>
+<section id="latihan" class="sec"></section>
+<section id="uts" class="sec"></section>
+</main>
+<nav><button class="on" data-t="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" shape-rendering="crispEdges"><path d="M3 11 12 3l9 8v10h-6v-6H9v6H3z"/></svg>Home</button><button data-t="materi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" shape-rendering="crispEdges"><path d="M3 4h8v16H3zM13 4h8v16h-8z"/></svg>Materi</button><button data-t="latihan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" shape-rendering="crispEdges"><path d="M4 20l1-5L16 4l4 4L9 19zM13 7l4 4"/></svg>Latihan</button><button data-t="uts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" shape-rendering="crispEdges"><path d="M5 3h10l4 4v14H5zM15 3v4h4M8 12h8M8 16h8"/></svg>UTS</button></nav>
+<script>
+const $=s=>document.querySelector(s);
+const F=t=>'<div class="f">'+t+'</div>';
+const M=[
+['1. Metode Analitik vs Numerik',`
+<p><b>Analitik</b>: memakai rumus dan teorema baku. Contoh <i>x</i><sup>2</sup> − 6<i>x</i> + 8 = 0 → difaktorkan (<i>x</i> − 4)(<i>x</i> − 2) = 0, sehingga <i>x</i><sub>1</sub> = 4 dan <i>x</i><sub>2</sub> = 2.</p>
+<p><b>Numerik</b>: pendekatan aproksimasi, hanya dengan operasi aritmetika biasa. Contoh: akar <i>f</i>(<i>x</i>) = <i>x</i><sup>2</sup> − 6<i>x</i> + 8 berada di selang [3, 6] karena <i>f</i> berganti tanda di selang itu (<i>f</i>(3) = −1, <i>f</i>(6) = 8).</p>
+<p><b>Kelebihan numerik</b>: dapat menyelesaikan persoalan yang tidak bisa diselesaikan secara analitik.</p>
+<h3>Kasus 1</h3>
+<p>(a) <i>x</i><sup>2</sup> − 4<i>x</i> + 4 = 0 lebih mudah secara analitik (tinggal difaktorkan). Integral dengan integran (√(45.3e<sup>7x</sup> + 100/x))<sup>4</sup> + 4/(x<sup>2</sup>+1) sulit dicari rumus integralnya, sehingga numerik lebih logis.</p>
+<p>(b) Numerik menghasilkan galat karena hanya mendekati nilai sebenarnya: ada <b>galat pemotongan</b> dan <b>galat pembulatan</b>.</p>
+<p>(c) Numerik dipakai bila persamaan terlalu rumit/tak punya solusi analitik, atau saat mengolah data eksperimen (data diskrit).</p>`],
+['2. Deret Taylor',`
+<p>Andaikan <i>f</i> dan semua turunannya menerus di selang [<i>a</i>, <i>b</i>], <i>x</i><sub>0</sub> ∈ [<i>a</i>, <i>b</i>]. Maka untuk <i>x</i> di sekitar <i>x</i><sub>0</sub>:</p>
+${F('<i>f</i>(<i>x</i>) = <i>f</i>(<i>x</i><sub>0</sub>) + (<i>x</i>−<i>x</i><sub>0</sub>)/1! · <i>f</i>′(<i>x</i><sub>0</sub>) + (<i>x</i>−<i>x</i><sub>0</sub>)<sup>2</sup>/2! · <i>f</i>″(<i>x</i><sub>0</sub>) + (<i>x</i>−<i>x</i><sub>0</sub>)<sup>3</sup>/3! · <i>f</i>‴(<i>x</i><sub>0</sub>) + … + (<i>x</i>−<i>x</i><sub>0</sub>)<sup><i>m</i></sup>/<i>m</i>! · <i>f</i><sup>(<i>m</i>)</sup>(<i>x</i><sub>0</sub>) + …')}
+<p>Dengan memisalkan <i>x</i> − <i>x</i><sub>0</sub> = <i>h</i>:</p>
+${F('<i>f</i>(<i>x</i>) = <i>f</i>(<i>x</i><sub>0</sub>) + <i>h</i>/1! · <i>f</i>′(<i>x</i><sub>0</sub>) + <i>h</i><sup>2</sup>/2! · <i>f</i>″(<i>x</i><sub>0</sub>) + <i>h</i><sup>3</sup>/3! · <i>f</i>‴(<i>x</i><sub>0</sub>) + … + <i>h</i><sup><i>m</i></sup>/<i>m</i>! · <i>f</i><sup>(<i>m</i>)</sup>(<i>x</i><sub>0</sub>)')}
+<h3>Contoh: sin(<i>x</i>) di sekitar <i>x</i><sub>0</sub> = 1</h3>
+<p><i>f</i> = sin <i>x</i>, <i>f</i>′ = cos <i>x</i>, <i>f</i>″ = −sin <i>x</i>, <i>f</i>‴ = −cos <i>x</i>, <i>f</i><sup>(4)</sup> = sin <i>x</i>, …</p>
+${F('sin(<i>x</i>) = sin(1) + <i>h</i>cos(1) + <i>h</i><sup>2</sup>/2 (−sin 1) + <i>h</i><sup>3</sup>/6 (−cos 1) + <i>h</i><sup>4</sup>/24 sin(1) + …<br>= 0.8415 + 0.5403<i>h</i> − 0.4208<i>h</i><sup>2</sup> − 0.0901<i>h</i><sup>3</sup> + 0.0351<i>h</i><sup>4</sup> + …')}
+<div class="note">Cara cepat: turunkan <i>f</i> berulang kali, hitung nilainya di <i>x</i><sub>0</sub>, lalu bagi dengan faktorial.</div>`],
+['3. Analisis Galat',`
+<p>Solusi numerik adalah hampiran terhadap solusi eksak sehingga mengandung galat (ε), yaitu selisih solusi eksak <i>a</i> dan hampiran â.</p>
+${F('Galat: ε = <i>a</i> − â<br>Galat mutlak: |ε| = |<i>a</i> − â|<br>Galat relatif: ε<sub>R</sub> = ε / <i>a</i> (atau × 100%)<br>Galat relatif hampiran: ε<sub>RA</sub> = ε / â')}
+<h3>Contoh</h3>
+<p>Nilai sejati = 10/3, hampiran = 3.333:</p>
+<p>galat = 10/3 − 3333/1000 = 1/3000 = 0.000333…<br>galat mutlak = 0.000333…<br>galat relatif = (1/3000)/(10/3) = 1/10000 = 0.0001<br>galat relatif hampiran = (1/3000)/3.333 = 1/9999</p>
+<h3>Kasus 2: pengurangan dua bilangan hampir sama</h3>
+<p><i>f</i>(<i>x</i>) = √(<i>x</i>+<i>a</i>) − √<i>x</i>, <i>a</i> = 2, <i>x</i> = 10000, 6 angka bena.</p>
+<p><b>(a) Langsung:</b> √10002 − √10000 = 100.010 − 100.000 = 0.0100000 (angka bena hilang).</p>
+<p><b>(b) Kalikan akar sekawan:</b></p>
+${F('<i>f</i>(<i>x</i>) = (√(<i>x</i>+<i>a</i>) − √<i>x</i>) × (√(<i>x</i>+<i>a</i>) + √<i>x</i>)/(√(<i>x</i>+<i>a</i>) + √<i>x</i>) = <i>a</i> / (√(<i>x</i>+<i>a</i>) + √<i>x</i>)')}
+<p>= 2/(√10002 + √10000) = 0.009999500025 → 0.00999950</p>
+<p><b>(c)</b> Eksak 0.00999950005. Galat (a) = 0.00000049995; galat (b) = 0.00000000005. Cara (b) jauh lebih teliti.</p>`],
+['4. Metode Tertutup: Bagi Dua',`
+<p>Syarat: akar ada di [<i>a</i>, <i>b</i>] dengan <i>f</i>(<i>a</i>)·<i>f</i>(<i>b</i>) &lt; 0. Bagi selang di tengah <i>c</i> = (<i>a</i>+<i>b</i>)/2.</p>
+${F('Jika <i>f</i>(<i>a</i>)<i>f</i>(<i>c</i>) &lt; 0 → selang baru [<i>a</i>, <i>c</i>]; jika tidak → selang baru [<i>c</i>, <i>b</i>]')}
+<h3>Kriteria berhenti</h3>
+${F('Lebar selang: |<i>a</i> − <i>b</i>| &lt; ε<br>Nilai fungsi: |<i>f</i>(<i>c</i>)| &lt; μ<br>Galat relatif: |(<i>c</i><sub>baru</sub> − <i>c</i><sub>lama</sub>)/<i>c</i><sub>baru</sub>| &lt; δ')}
+<h3>Kasus 3a: <i>f</i>(<i>x</i>) = <i>x</i><sup>3</sup> − 3<i>x</i> + 1, [1, 2], ε = 0.5</h3>
+<div class="tw"><table><tr><th>r</th><th>a</th><th>c</th><th>b</th><th>f(a)</th><th>f(c)</th><th>f(b)</th><th>Selang baru</th><th>Lebar</th></tr>
+<tr><td>0</td><td>1</td><td>1.5</td><td>2</td><td>−1</td><td>−0.125</td><td>3</td><td>[c, b]</td><td>0.5</td></tr>
+<tr><td>1</td><td>1.5</td><td>1.75</td><td>2</td><td>−0.125</td><td>0.171875</td><td>3</td><td>[a, c]</td><td>0.25</td></tr></table></div>
+<p>Berhenti di <i>r</i> = 1 karena lebar 0.25 &lt; 0.5. Hampiran akar <i>x</i> = 1.750000.</p>
+<div class="note">Kelemahan bagi dua: konvergensinya lambat (contoh <i>e<sup>x</sup></i> − 5<i>x</i><sup>2</sup> di [0,1], ε = 0.00001, butuh 16 iterasi, akar 0.605263).</div>`],
+['5. Metode Tertutup: Regula-Falsi',`
+<p>Memanfaatkan nilai <i>f</i>(<i>a</i>) dan <i>f</i>(<i>b</i>): bila <i>f</i>(<i>a</i>) lebih dekat ke nol, akar lebih dekat ke <i>a</i>. Titik <i>c</i> didapat dari gradien garis AB = gradien garis BC:</p>
+${F('(<i>f</i>(<i>b</i>) − <i>f</i>(<i>a</i>))/(<i>b</i> − <i>a</i>) = (<i>f</i>(<i>b</i>) − 0)/(<i>b</i> − <i>c</i>)  ⟹  <i>c</i> = <i>b</i> − <i>f</i>(<i>b</i>)(<i>b</i> − <i>a</i>) / (<i>f</i>(<i>b</i>) − <i>f</i>(<i>a</i>))')}
+<h3>Kasus 3b: <i>x</i><sup>3</sup> − 3<i>x</i> + 1 di [1, 2], sampai <i>r</i> = 3</h3>
+<div class="tw"><table><tr><th>r</th><th>a</th><th>c</th><th>b</th><th>f(a)</th><th>f(c)</th><th>f(b)</th><th>Selang</th><th>Lebar</th></tr>
+<tr><td>0</td><td>1.000000</td><td>1.250000</td><td>2</td><td>−1.000000</td><td>−0.796875</td><td>3</td><td>[c, b]</td><td>0.750000</td></tr>
+<tr><td>1</td><td>1.250000</td><td>1.407407</td><td>2</td><td>−0.796875</td><td>−0.434436</td><td>3</td><td>[c, b]</td><td>0.592593</td></tr>
+<tr><td>2</td><td>1.407407</td><td>1.482367</td><td>2</td><td>−0.434436</td><td>−0.189731</td><td>3</td><td>[c, b]</td><td>0.517633</td></tr>
+<tr><td>3</td><td>1.482367</td><td>1.511842</td><td>2</td><td>−0.189731</td><td>−0.082154</td><td>3</td><td>[c, b]</td><td>0.488158</td></tr></table></div>
+<p>Hampiran akar pada iterasi ke-3: <i>x</i> = 1.511842.</p>
+<div class="note">Ujung selang <i>b</i> tidak pernah berubah (selalu [c, b]); <i>c</i> menjadi titik mandek/stagnan.</div>`],
+['6. Metode Terbuka: Iterasi Titik-Tetap',`
+<p>Ubah <i>f</i>(<i>x</i>) = 0 menjadi <i>x</i> = <i>g</i>(<i>x</i>), lalu iterasi:</p>
+${F('<i>x</i><sub><i>r</i>+1</sub> = <i>g</i>(<i>x</i><sub><i>r</i></sub>) ; <i>r</i> = 0, 1, 2, 3, …')}
+<p>Berhenti bila |<i>x</i><sub><i>r</i>+1</sub> − <i>x</i><sub><i>r</i></sub>| &lt; ε atau |(<i>x</i><sub><i>r</i>+1</sub> − <i>x</i><sub><i>r</i></sub>)/<i>x</i><sub><i>r</i>+1</sub>| &lt; δ.</p>
+<h3>Contoh: <i>x</i><sub><i>r</i>+1</sub> = √(2<i>x</i><sub><i>r</i></sub> + 3), <i>x</i><sub>0</sub> = 4</h3>
+<p><i>x</i><sub>1</sub> = √(2(4)+3) = √11 ≈ 3.316625; lalu 3.103748; 3.034385; 3.011440; … menuju <i>x</i> = 3.000000 (konvergen monoton).</p>`],
+['7. Metode Newton-Raphson',`
+<p>Paling terkenal dan paling cepat konvergen. Rumus diturunkan (i) secara geometri atau (ii) dengan deret Taylor.</p>
+<h3>Penurunan geometri</h3>
+<p>Gradien garis singgung di <i>x</i><sub><i>r</i></sub>:</p>
+${F('<i>m</i> = <i>f</i>′(<i>x</i><sub><i>r</i></sub>) = Δ<i>y</i>/Δ<i>x</i> = (<i>f</i>(<i>x</i><sub><i>r</i></sub>) − 0)/(<i>x</i><sub><i>r</i></sub> − <i>x</i><sub><i>r</i>+1</sub>)')}
+<p>Susun ulang:</p>
+${F('<i>x</i><sub><i>r</i>+1</sub> = <i>x</i><sub><i>r</i></sub> − <i>f</i>(<i>x</i><sub><i>r</i></sub>) / <i>f</i>′(<i>x</i><sub><i>r</i></sub>) , <i>f</i>′(<i>x</i><sub><i>r</i></sub>) ≠ 0')}
+<h3>Contoh: <i>f</i>(<i>x</i>) = <i>e<sup>x</sup></i> − 5<i>x</i><sup>2</sup>, <i>x</i><sub>0</sub> = 0.5</h3>
+<p><i>f</i>′(<i>x</i>) = <i>e<sup>x</sup></i> − 10<i>x</i>. Iterasi: 0.500000 → 0.618976 → 0.605444 → 0.605267 → 0.605267. Akar <i>x</i> = 0.605267.</p>
+<h3>Kasus 4: <i>f</i>(<i>x</i>) = <i>x</i><sup>3</sup> − <i>x</i> − 1, <i>x</i><sub>0</sub> = 1</h3>
+<p><i>f</i>′(<i>x</i>) = 3<i>x</i><sup>2</sup> − 1. Hasil: <i>x</i><sub>1</sub> = 1.500000, <i>x</i><sub>2</sub> = 1.347826, <i>x</i><sub>3</sub> = 1.325200.</p>
+<p><b>Coba sendiri</b> (klik berulang):</p>
+<button class="btn" id="nb">Iterasi berikutnya</button><button class="btn s" id="nr">Reset</button>
+<div class="tw"><table id="nt"></table></div>`]
+];
+$('#materi').innerHTML=M.map((m,i)=>`<details class="card" ${i==0?'open':''}><summary>${m[0]}</summary>${m[1]}</details>`).join('');
+let nx;function nreset(){nx=[1];nrender()}
+function nrender(){let h='<tr><th>r</th><th>x<sub>r</sub></th><th>f(x<sub>r</sub>)</th><th>f′(x<sub>r</sub>)</th><th>|x<sub>r</sub>−x<sub>r−1</sub>|</th></tr>';
+nx.forEach((x,i)=>{h+=`<tr><td>${i}</td><td>${x.toFixed(6)}</td><td>${(x**3-x-1).toFixed(6)}</td><td>${(3*x*x-1).toFixed(6)}</td><td>${i?Math.abs(x-nx[i-1]).toFixed(6):'-'}</td></tr>`});$('#nt').innerHTML=h}
+$('#nb').onclick=()=>{if(nx.length<9){let x=nx[nx.length-1];nx.push(x-(x**3-x-1)/(3*x*x-1));nrender()}};$('#nr').onclick=nreset;nreset();
+const Q=[
+['Galat relatif (ε<sub>R</sub>) didefinisikan sebagai …',['ε / â','ε / <i>a</i>','|â| − |<i>a</i>|','ε × â'],1,'ε<sub>R</sub> = ε/<i>a</i>, yaitu galat dibagi nilai sejati. Jika dibagi hampiran, disebut galat relatif hampiran.'],
+['Nilai sejati 10/3, hampiran 3.333. Galat relatifnya …',['0.0001','0.000333','0.001','0.01'],0,'galat = 1/3000, dibagi 10/3 → 1/10000 = 0.0001. (Galat relatif hampiran = 1/9999.)'],
+['Pada <i>f</i>(<i>x</i>) = √(<i>x</i>+<i>a</i>) − √<i>x</i> untuk <i>x</i> besar, cara yang lebih baik adalah …',['Menambah angka desimal saja','Mengalikan akar sekawan → <i>a</i>/(√(<i>x</i>+<i>a</i>)+√<i>x</i>)','Membagi dengan <i>x</i>','Membulatkan lebih dulu'],1,'Pengurangan dua bilangan hampir sama menghilangkan angka bena. Rasionalisasi menggantinya dengan penjumlahan.'],
+['Dalam deret Taylor, jika <i>h</i> = <i>x</i> − <i>x</i><sub>0</sub>, suku ke-3 adalah …',['<i>h</i>/1! · <i>f</i>′(<i>x</i><sub>0</sub>)','<i>h</i><sup>2</sup>/2! · <i>f</i>″(<i>x</i><sub>0</sub>)','<i>h</i><sup>3</sup>/3! · <i>f</i>‴(<i>x</i><sub>0</sub>)','<i>f</i>(<i>x</i><sub>0</sub>)'],1,'Urutan: <i>f</i>(<i>x</i><sub>0</sub>), lalu <i>h</i>/1!·<i>f</i>′, lalu <i>h</i><sup>2</sup>/2!·<i>f</i>″ (suku ke-3).'],
+['Bagi dua untuk <i>f</i>(<i>x</i>) = <i>x</i><sup>3</sup> − 3<i>x</i> + 1 di [1, 2]. Nilai <i>c</i> pertama dan selang barunya?',['1.5 ; [1, 1.5]','1.5 ; [1.5, 2]','1.25 ; [1.25, 2]','1.75 ; [1, 1.75]'],1,'<i>c</i> = 1.5, <i>f</i>(1.5) = −0.125 dan <i>f</i>(1) = −1 (sama tanda), jadi selang baru [<i>c</i>, <i>b</i>] = [1.5, 2].'],
+['Pada regula-falsi, titik <i>c</i> dihitung dengan …',['(<i>a</i>+<i>b</i>)/2','<i>b</i> − <i>f</i>(<i>b</i>)(<i>b</i>−<i>a</i>) / (<i>f</i>(<i>b</i>) − <i>f</i>(<i>a</i>))','<i>x</i><sub><i>r</i></sub> − <i>f</i>/<i>f</i>′','√(2<i>x</i>+3)'],1,'Rumus diturunkan dari kesamaan gradien garis AB dan BC.'],
+['“Titik mandek” pada regula-falsi artinya …',['Iterasi berhenti karena <i>f</i>(<i>c</i>) = 0','Salah satu ujung selang tidak pernah berubah','Selang melebar','Akar tidak ada'],1,'Pada contoh <i>e<sup>x</sup></i> − 5<i>x</i><sup>2</sup>, selang selalu [<i>c</i>, <i>b</i>] sehingga <i>b</i> = 1 tetap.'],
+['Titik-tetap <i>x</i><sub><i>r</i>+1</sub> = √(2<i>x</i><sub><i>r</i></sub>+3), <i>x</i><sub>0</sub> = 4 memberi <i>x</i><sub>1</sub> = …',['3.316625','3.103748','4.123106','3.000000'],0,'<i>x</i><sub>1</sub> = √(2·4+3) = √11 ≈ 3.316625.'],
+['Rumus Newton-Raphson yang benar adalah …',['<i>x</i><sub><i>r</i>+1</sub> = <i>x</i><sub><i>r</i></sub> + <i>f</i>/<i>f</i>′','<i>x</i><sub><i>r</i>+1</sub> = <i>x</i><sub><i>r</i></sub> − <i>f</i>(<i>x</i><sub><i>r</i></sub>)/<i>f</i>′(<i>x</i><sub><i>r</i></sub>)','<i>x</i><sub><i>r</i>+1</sub> = <i>f</i>′/<i>f</i>','<i>x</i><sub><i>r</i>+1</sub> = <i>g</i>(<i>x</i><sub><i>r</i>−1</sub>)'],1,'Dari <i>f</i>′(<i>x</i><sub><i>r</i></sub>) = <i>f</i>(<i>x</i><sub><i>r</i></sub>)/(<i>x</i><sub><i>r</i></sub> − <i>x</i><sub><i>r</i>+1</sub>) disusun ulang.'],
+['Newton-Raphson <i>f</i>(<i>x</i>) = <i>x</i><sup>3</sup> − <i>x</i> − 1, <i>x</i><sub>0</sub> = 1. Nilai <i>x</i><sub>1</sub> = …',['1.500000','1.347826','1.250000','0.500000'],0,'<i>f</i>(1) = −1, <i>f</i>′(1) = 2, jadi <i>x</i><sub>1</sub> = 1 − (−1)/2 = 1.5.']
+];
+let sc=0,dn=0;
+$('#latihan').innerHTML='<div class="card"><h2>Latihan Interaktif</h2><p>Pilih jawaban, lalu pembahasan muncul. <span class="score" id="sc">Skor: 0/'+Q.length+'</span></p><button class="btn s" onclick="location.reload()">Ulangi</button></div>'+
+Q.map((q,i)=>`<div class="card" data-i="${i}"><span class="tag">Soal ${i+1}</span><p>${q[0]}</p>${q[1].map((o,j)=>`<button class="opt" data-j="${j}">${o}</button>`).join('')}<div class="exp"><b>Pembahasan:</b> ${q[3]}</div></div>`).join('');
+$('#latihan').onclick=e=>{const b=e.target.closest('.opt');if(!b)return;const c=b.closest('.card');if(c.dataset.done)return;c.dataset.done=1;const i=+c.dataset.i,j=+b.dataset.j;
+c.querySelectorAll('.opt')[Q[i][2]].classList.add('ok');if(j==Q[i][2])sc++;else b.classList.add('no');dn++;c.querySelector('.exp').classList.add('show');$('#sc').textContent='Skor: '+sc+'/'+Q.length+(dn==Q.length?' SELESAI':'');P.qd=Math.max(P.qd,dn);P.qb=Math.max(P.qb,sc);prog()};
+const U=[
+['A','1','Pengurangan dua bilangan hampir sama','<i>f</i>(<i>x</i>) = <i>x</i>(√(<i>x</i>+1) − √<i>x</i>). (a) Hitung <i>f</i>(500) langsung dengan pembulatan 6 angka bena. (b) Hitung dengan cara yang lebih baik. Bandingkan galat dengan nilai eksak <i>f</i>(500) = 11.174755300747198.','Galat mutlak cara (a)','0.02476',0.0001,`<p><b>(a) Langsung (6 angka bena):</b> √501 = 22.3830, √500 = 22.3607. Selisih = 0.0223000, dikali 500 → <b>11.1500</b>.</p>
+<p><b>(b) Sekawan:</b></p>${F('<i>f</i>(<i>x</i>) = <i>x</i> / (√(<i>x</i>+1) + √<i>x</i>) = 500 / (22.3830 + 22.3607) = 500 / 44.7437 ≈ 11.1748')}
+<p><b>Galat:</b> (a) |11.174755 − 11.1500| ≈ <b>0.02476</b>; (b) |11.174755 − 11.1748| ≈ <b>0.00004</b>.</p><p>Cara (b) jauh lebih teliti karena menghindari kehilangan angka bena akibat pengurangan.</p>`],
+['A','2','Integral & Trapezium','Hitung ∫<sub>−1</sub><sup>1</sup> 9 − <i>x</i><sup>2</sup> <i>dx</i> secara analitik. Lalu dengan metode trapezium, daerah dibagi per setengah satuan sumbu x. Cari galat mutlaknya.','Hasil trapezium','17.25',0.001,`<p><b>Analitik:</b></p>${F('∫(9 − <i>x</i><sup>2</sup>)<i>dx</i> = [9<i>x</i> − <i>x</i><sup>3</sup>/3] dari −1 ke 1 = (9 − 1/3) − (−9 + 1/3) = 52/3 ≈ 17.3333')}
+<p><b>Trapezium</b>, <i>h</i> = 0.5: titik <i>x</i> = −1, −0.5, 0, 0.5, 1 → <i>f</i> = 8, 8.75, 9, 8.75, 8.</p>${F('<i>I</i> ≈ <i>h</i>/2 [<i>f</i><sub>0</sub> + 2(<i>f</i><sub>1</sub>+<i>f</i><sub>2</sub>+<i>f</i><sub>3</sub>) + <i>f</i><sub>4</sub>] = 0.25 [8 + 2(26.5) + 8] = 17.25')}
+<p><b>Galat mutlak</b> = |17.3333 − 17.25| = <b>0.0833</b> (1/12).</p>`],
+['A','3','Menurunkan Newton-Raphson dari grafik','Jelaskan dengan grafik (garis singgung di <i>x<sub>n</sub></i> memotong sumbu-x di <i>x</i><sub><i>n</i>+1</sub>) bagaimana menurunkan rumus Newton-Raphson.','','',0,`<p>Garis singgung di titik (<i>x<sub>n</sub></i>, <i>f</i>(<i>x<sub>n</sub></i>)) memotong sumbu-x di <i>x</i><sub><i>n</i>+1</sub>. Dari segitiga siku-siku: tinggi = <i>f</i>(<i>x<sub>n</sub></i>), alas = <i>x<sub>n</sub></i> − <i>x</i><sub><i>n</i>+1</sub>. Gradien garis singgung:</p>
+${F('<i>f</i>′(<i>x<sub>n</sub></i>) = (<i>f</i>(<i>x<sub>n</sub></i>) − 0) / (<i>x<sub>n</sub></i> − <i>x</i><sub><i>n</i>+1</sub>)')}
+<p>Selesaikan untuk <i>x</i><sub><i>n</i>+1</sub>:</p>${F('<i>x</i><sub><i>n</i>+1</sub> = <i>x<sub>n</sub></i> − <i>f</i>(<i>x<sub>n</sub></i>) / <i>f</i>′(<i>x<sub>n</sub></i>) , <i>f</i>′(<i>x<sub>n</sub></i>) ≠ 0')}`],
+['A','4','Metode Secant','<i>f</i>(<i>x</i>) = <i>x</i><sup>3</sup> + 2<i>x</i><sup>2</sup> + 10<i>x</i> − 20 = 0, <i>X</i><sub>0</sub> = 1, <i>X</i><sub>1</sub> = 1.5. Lakukan 3 iterasi. (Akar eksak 1.368808107)','Hampiran setelah 3 iterasi','1.36881',0.0001,`<p><i>f</i>(1) = −7, <i>f</i>(1.5) = 2.875. Rumus Secant:</p>${F('<i>x</i><sub><i>r</i>+1</sub> = <i>x</i><sub><i>r</i></sub> − <i>f</i>(<i>x</i><sub><i>r</i></sub>)(<i>x</i><sub><i>r</i></sub> − <i>x</i><sub><i>r</i>−1</sub>) / (<i>f</i>(<i>x</i><sub><i>r</i></sub>) − <i>f</i>(<i>x</i><sub><i>r</i>−1</sub>))')}
+<p><b>Iterasi 1:</b> <i>x</i><sub>2</sub> = 1.5 − 2.875(0.5)/9.875 = <b>1.354430</b>, <i>f</i> = −0.302063.</p>
+<p><b>Iterasi 2:</b> <i>x</i><sub>3</sub> = 1.354430 − (−0.302063)(−0.145570)/(−3.177063) = <b>1.368270</b>, <i>f</i> = −0.011350.</p>
+<p><b>Iterasi 3:</b> <i>x</i><sub>4</sub> = 1.368270 − (−0.011350)(0.013840)/(0.290713) = <b>1.368810</b>.</p>`],
+['B','1','Galat','Hitung galat, galat mutlak, galat relatif, dan galat relatif hampiran: (a) nilai sejati 8.25 m, hasil ukur 8.20 m. (b) nilai sejati 3.31793, hampiran 1.70718 (sesuai soal).','Galat relatif (a)','0.0061',0.0002,`<p><b>(a)</b> galat = 8.25 − 8.20 = <b>0.05</b>; galat mutlak = <b>0.05</b>; galat relatif = 0.05/8.25 = <b>0.0061</b> (0.61%); galat relatif hampiran = 0.05/8.20 = <b>0.0061</b> (0.6098%).</p>
+<p><b>(b)</b> galat = 3.31793 − 1.70718 = <b>1.61075</b>; galat mutlak = <b>1.61075</b>; galat relatif = 1.61075/3.31793 ≈ <b>0.4855</b>; galat relatif hampiran = 1.61075/1.70718 ≈ <b>0.9435</b>.</p>`],
+['B','2','Deret Taylor','(a) Deret Taylor <i>f</i>(<i>x</i>) = 2<i>x</i><sup>3</sup> − 5<i>x</i><sup>2</sup> − 4 di <i>x</i> = 3. (b) Pemuaian Taylor cos <i>x</i> berpusat di <i>x</i> = 1. (c) <i>f</i>(<i>x</i>) = <i>x</i><sup>3</sup> − 2<i>x</i> + 4 di <i>x</i> = 3.','Koefisien (x−3)² pada (a)','13',0.01,`<p><b>(a)</b> <i>f</i>(3) = 5; <i>f</i>′ = 6<i>x</i><sup>2</sup>−10<i>x</i> → 24; <i>f</i>″ = 12<i>x</i>−10 → 26; <i>f</i>‴ = 12.</p>${F('<i>f</i>(<i>x</i>) = 5 + 24(<i>x</i>−3) + 13(<i>x</i>−3)<sup>2</sup> + 2(<i>x</i>−3)<sup>3</sup>')}
+<p><b>(b)</b> Dengan <i>h</i> = <i>x</i> − 1:</p>${F('cos <i>x</i> = cos 1 − <i>h</i> sin 1 − <i>h</i><sup>2</sup>/2 cos 1 + <i>h</i><sup>3</sup>/6 sin 1 + <i>h</i><sup>4</sup>/24 cos 1 − …<br>= 0.5403 − 0.8415<i>h</i> − 0.2702<i>h</i><sup>2</sup> + 0.1403<i>h</i><sup>3</sup> + 0.0225<i>h</i><sup>4</sup> − …')}
+<p><b>(c)</b> <i>f</i>(3) = 25; <i>f</i>′ = 3<i>x</i><sup>2</sup>−2 → 25; <i>f</i>″ = 6<i>x</i> → 18; <i>f</i>‴ = 6.</p>${F('<i>f</i>(<i>x</i>) = 25 + 25(<i>x</i>−3) + 9(<i>x</i>−3)<sup>2</sup> + (<i>x</i>−3)<sup>3</sup>')}`],
+['B','3','Mencari selang berisi akar','Program mencari selang kecil yang berisi akar <i>f</i>(<i>x</i>) = <i>e<sup>x</sup></i> − 5<i>x</i> dari <i>a</i> = −0.5 sampai <i>b</i> = 1.4 dengan <i>h</i> = 0.1.','Batas kiri selang','0.2',0.01,`<p>Hitung <i>f</i>(<i>x</i>) tiap kenaikan 0.1 sampai tanda berganti:</p>
+<div class="tw"><table><tr><th>x</th><th>−0.5</th><th>0.0</th><th>0.1</th><th>0.2</th><th>0.3</th><th>…</th><th>1.4</th></tr><tr><td>f(x)</td><td>3.1065</td><td>1.0000</td><td>0.6052</td><td>0.2214</td><td>−0.1501</td><td>…</td><td>−2.9448</td></tr></table></div>
+<p><i>f</i>(0.2)·<i>f</i>(0.3) &lt; 0 → akar berada di selang <b>[0.2, 0.3]</b>.</p>`],
+['B','4','Bagi Dua','<i>x</i><sup>2</sup> − 6<i>x</i> + 5 = 0, selang [2, 6], toleransi 0.3. Hitung dengan metode bagi dua.','Hampiran akar','5',0.01,`<p><i>f</i>(2) = −3, <i>f</i>(6) = 5 (beda tanda, akar ada di selang).</p>
+<div class="tw"><table><tr><th>r</th><th>a</th><th>c</th><th>b</th><th>f(a)</th><th>f(c)</th><th>f(b)</th><th>Selang baru</th><th>Lebar</th></tr><tr><td>0</td><td>2</td><td>4</td><td>6</td><td>−3</td><td>−3</td><td>5</td><td>[c, b]</td><td>2</td></tr><tr><td>1</td><td>4</td><td>5</td><td>6</td><td>−3</td><td>0</td><td>5</td><td>stop</td><td>1</td></tr></table></div>
+<p>Pada <i>r</i> = 1, <i>f</i>(5) = 0 sehingga |<i>f</i>(<i>c</i>)| &lt; toleransi. Hampiran akar <b><i>x</i> = 5</b>.</p>`]
+];
+$('#uts').innerHTML='<div class="card"><h2>Soal UTS Gasal 2025/2026</h2><p>Tipe A &amp; Tipe B. Kerjakan di kertas, isi jawaban akhir (opsional), lalu buka pembahasan.</p></div>'+
+U.map((u,i)=>`<div class="card" data-i="${i}"><span class="tag">Tipe ${u[0]}</span><span class="tag">No ${u[1]}</span><b>${u[2]}</b><p>${u[3]}</p>
+${u[4]?`<label>${u[4]}: <input type="text" inputmode="decimal"></label> <button class="btn s chk">Cek</button><span class="fb"></span><br>`:''}
+<button class="btn tg">Lihat pembahasan</button><div class="sol">${u[7]}</div></div>`).join('');
+$('#uts').onclick=e=>{const c=e.target.closest('.card');if(!c||!c.dataset.i)return;const u=U[c.dataset.i];
+if(e.target.classList.contains('tg')){const s=c.querySelector('.sol');s.classList.toggle('show');e.target.textContent=s.classList.contains('show')?'Tutup pembahasan':'Lihat pembahasan';if(s.classList.contains('show'))P.u.add(+c.dataset.i);prog()}
+if(e.target.classList.contains('chk')){const v=parseFloat(c.querySelector('input').value.replace(',','.')),fb=c.querySelector('.fb');
+if(isNaN(v)){fb.textContent='Isi angka dulu';fb.style.color='var(--mu)';return}
+const ok=Math.abs(v-parseFloat(u[5]))<=u[6];fb.textContent=ok?'BENAR':'BELUM TEPAT, CEK PEMBAHASAN';fb.style.color=ok?'var(--ok)':'var(--no)';if(ok)P.u.add(+c.dataset.i);prog()}};
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button,.sec').forEach(x=>x.classList.remove('on'));b.classList.add('on');$('#'+b.dataset.t).classList.add('on');prog();scrollTo(0,0)});
+const S=(p)=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" shape-rendering="crispEdges"><path d="'+p+'"/></svg>';
+const IC={materi:S('M3 4h8v16H3zM13 4h8v16h-8z'),latihan:S('M4 20l1-5L16 4l4 4L9 19zM13 7l4 4'),uts:S('M5 3h10l4 4v14H5zM15 3v4h4M8 12h8M8 16h8')};
+const P={m:new Set(),u:new Set(),qd:0,qb:0};
+try{const d=JSON.parse(localStorage.getItem('lmsp')||'{}');(d.m||[]).forEach(x=>P.m.add(x));(d.u||[]).forEach(x=>P.u.add(x));P.qd=d.qd||0;P.qb=d.qb||0}catch(e){}
+document.querySelectorAll('#materi details').forEach((d,i)=>d.addEventListener('toggle',()=>{if(d.open){P.m.add(i);prog()}}));
+const go=t=>document.querySelector('nav button[data-t='+t+']').click();
+const bar=p=>'<div class="pb"><span style="width:'+p+'%"></span></div>';
+function prog(){
+const a=Math.round(P.m.size/M.length*100),b=Math.round(P.qd/Q.length*100),c=Math.round(P.u.size/U.length*100),t=Math.round((a+b+c)/3);
+try{localStorage.setItem('lmsp',JSON.stringify({m:[...P.m],u:[...P.u],qd:P.qd,qb:P.qb}))}catch(e){}
+const row=(k,l,txt,p)=>'<div class="card"><div class="row">'+IC[k]+'<div><b>'+l+'</b><br><small>'+txt+'</small></div><button class="btn s" onclick="go(\''+k+'\')">Buka</button></div>'+bar(p)+'</div>';
+$('#home').innerHTML='<div class="card"><div class="ttl">Progres Belajar</div><div class="big">'+t+'%</div>'+bar(t)+'<small style="color:#666;text-transform:uppercase">'+(t==100?'Semua modul selesai':t==0?'Belum mulai, buka modul di bawah':'Lanjutkan belajar')+'</small></div>'+
+row('materi','Materi',P.m.size+' / '+M.length+' bab dibuka',a)+row('latihan','Latihan Interaktif',P.qd+' / '+Q.length+' soal dijawab · skor terbaik '+P.qb,b)+row('uts','Soal UTS',P.u.size+' / '+U.length+' soal dikerjakan',c)+
+'<div class="card"><div class="ttl">Info</div>Soal UTS dihitung selesai bila jawaban akhir benar atau pembahasan sudah dibuka. Progres tersimpan di perangkat ini.</div>'}
+prog();
+const PA=['...#####...','.#########.','######e####','#########..','#######....','#####......','#######....','#########..','###########','.#########.','...#####...'],PC=PA.map((r,i)=>i>2&&i<8?'###########':r);
+const px=r=>r.map((s,y)=>[...s].map((c,x)=>c=='.'?'':"<rect x='"+x+"' y='"+y+"' width='1.02' height='1.02' fill='"+(c=='e'?'#333':'#00FF00')+"'/>").join('')).join('');
+$('#pac').innerHTML="<i><svg class='o' viewBox='0 0 11 11' shape-rendering='crispEdges'>"+px(PA)+"</svg><svg class='c' viewBox='0 0 11 11' shape-rendering='crispEdges'>"+px(PC)+"</svg></i>";
+</script>
+<script>
+(()=>{
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const nav=document.querySelector('nav'),btns=[...nav.querySelectorAll('button')];
+const ind=document.createElement('span');ind.id='ind';nav.prepend(ind);
+const mv=()=>{const i=btns.findIndex(b=>b.classList.contains('on'));ind.style.transform='translateX('+(i*100)+'%)';ind.style.setProperty('--i',i)};mv();
+const bg=document.createElement('div');bg.id='bg';document.body.prepend(bg);
+const sp=document.createElement('div');sp.id='sp';document.body.prepend(sp);
+let tk=0;const upd=()=>{tk=0;const h=document.documentElement.scrollHeight-innerHeight;sp.style.transform='scaleX('+(h>0?Math.min(1,scrollY/h):0)+')'};
+addEventListener('scroll',()=>{if(!tk)tk=requestAnimationFrame(upd)},{passive:true});
+/* reveal cards */
+const io=new IntersectionObserver(es=>{let k=0;es.filter(e=>e.isIntersecting).forEach(e=>{const c=e.target,d=k++*70;c.style.transitionDelay=d+'ms';c.classList.add('in');io.unobserve(c);setTimeout(()=>{c.classList.remove('pre','in');c.style.transitionDelay=''},950+d)})},{threshold:.04,rootMargin:'0px 0px -3% 0px'});
+const reveal=s=>{if(reduce||!s)return;s.querySelectorAll(':scope>.card').forEach(c=>{c.classList.remove('in');c.classList.add('pre');c.style.transitionDelay='0ms';io.observe(c)})};
+btns.forEach(b=>b.addEventListener('click',()=>{mv();reveal(document.getElementById(b.dataset.t));upd()}));
+reveal(document.getElementById('home'));
+/* smooth details */
+document.querySelectorAll('#materi details').forEach(d=>{const s=d.querySelector('summary');let a=null;
+s.addEventListener('click',e=>{e.preventDefault();if(reduce){d.open=!d.open;return}
+if(a){a.cancel();a=null}
+const st=d.offsetHeight;d.style.overflow='hidden';
+if(!d.open){d.open=true;const en=d.offsetHeight;a=d.animate({height:[st+'px',en+'px']},{duration:450,easing:'cubic-bezier(.2,.8,.2,1)'})}
+else{const en=s.offsetHeight+(d.offsetHeight-d.clientHeight);a=d.animate({height:[st+'px',en+'px']},{duration:380,easing:'cubic-bezier(.4,0,.2,1)'});a.onfinish=()=>{d.open=false}}
+const fin=()=>{d.style.overflow='';a=null};a.addEventListener('finish',fin);a.addEventListener('cancel',()=>{d.style.overflow=''})})});
+/* Newton rows */
+const _nr=nrender;nrender=function(){_nr();if(nx.length>1){const r=document.querySelectorAll('#nt tr');r[r.length-1].classList.add('rowin')}};
+/* home: count up + bar growth */
+const _p=prog;const last={t:0,bars:[]};
+prog=function(){_p();const big=document.querySelector('#home .big');if(!big)return;
+const to=parseInt(big.textContent)||0,from=last.t;last.t=to;
+if(!reduce&&from!==to){const t0=performance.now();(function f(n){const k=Math.min(1,(n-t0)/900),e=1-Math.pow(1-k,3);big.textContent=Math.round(from+(to-from)*e)+'%';if(k<1)requestAnimationFrame(f)})(t0)}
+document.querySelectorAll('#home .pb>span').forEach((s,i)=>{const w=s.style.width,f=(last.bars[i]||0)+'%';last.bars[i]=parseFloat(w);if(reduce)return;s.style.transition='none';s.style.width=f;void s.offsetWidth;s.style.transition='';s.style.width=w})};
+prog();
+/* feedback pops */
+const rs=el=>{if(!el)return;el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop')};
+document.getElementById('latihan').addEventListener('click',e=>{if(e.target.closest('.opt'))rs(document.getElementById('sc'))});
+document.getElementById('uts').addEventListener('click',e=>{if(!e.target.classList.contains('chk'))return;const c=e.target.closest('.card'),fb=c.querySelector('.fb'),i=c.querySelector('input');rs(fb);if(/BELUM|Isi/.test(fb.textContent)){i.classList.remove('nope');void i.offsetWidth;i.classList.add('nope')}});
+/* ripple */
+document.addEventListener('pointerdown',e=>{const t=e.target.closest('.btn,.opt,nav button');if(!t||reduce)return;const r=t.getBoundingClientRect(),z=Math.max(r.width,r.height)*2.2,s=document.createElement('span');s.className='rip';s.style.cssText='width:'+z+'px;height:'+z+'px;left:'+(e.clientX-r.left-z/2)+'px;top:'+(e.clientY-r.top-z/2)+'px';t.appendChild(s);setTimeout(()=>s.remove(),650)});
+})();
+</script>
+<script>
+(()=>{
+const sp=document.getElementById('splash');if(!sp)return;
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const tt=document.getElementById('stt');
+[...'omahcoding'].forEach((c,i)=>{const s=document.createElement('span');s.textContent=c;s.style.animationDelay=(i*.08)+'s,'+(i*.05)+'s';tt.appendChild(s)});
+document.getElementById('spc').innerHTML="<svg class='o' viewBox='0 0 11 11' shape-rendering='crispEdges'>"+px(PA)+"</svg><svg class='c' viewBox='0 0 11 11' shape-rendering='crispEdges'>"+px(PC)+"</svg>";
+const G=['...####...','..######..','.########.','.##w##w##.','.#ww##ww#.','.##w##w##.','.########.','.########.','.##.##.##.','.#..##..#.'];
+document.getElementById('sgh').innerHTML="<svg viewBox='0 0 10 10' shape-rendering='crispEdges'>"+G.map((s,y)=>[...s].map((c,x)=>c=='.'?'':"<rect x='"+x+"' y='"+y+"' width='1.02' height='1.02' fill='"+(c=='w'?'#fff':'#333')+"'/>").join('')).join('')+"</svg>";
+const M=['Menyalakan kalkulator...','Mencari akar persamaan...','Mengurangi galat...','Iterasi Newton-Raphson...','Membagi dua selang...','Hampir konvergen!'];
+const n=document.getElementById('spn'),m=document.getElementById('smg');let mi=-1,done=false,t0=performance.now();
+const D=2950;
+function dismiss(){if(done)return;done=true;sp.classList.add('out');document.documentElement.style.overflow='';setTimeout(()=>{sp.remove();const b=document.querySelector('nav button.on');if(b)b.click()},reduce?0:900)}
+document.documentElement.style.overflow='hidden';
+(function f(now){if(done)return;const k=Math.max(0,Math.min(1,(now-t0-350)/2600));n.textContent=Math.round(k*100)+'%';const i=Math.min(M.length-1,Math.floor(k*M.length));if(i!==mi){mi=i;m.textContent=M[i];m.style.animation='none';void m.offsetWidth;m.style.animation=''}
+if(now-t0>=D){n.textContent='100%';setTimeout(dismiss,250);return}requestAnimationFrame(f)})(t0);
+sp.addEventListener('click',dismiss);
+})();
+</script>
+<script>
+(()=>{
+if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+const mk=(c,x,y)=>{const e=document.createElement('span');e.className='fx '+c;e.style.transform='translate('+x+'px,'+y+'px)';document.body.appendChild(e);return e};
+addEventListener('pointerdown',ev=>{
+const x=ev.clientX,y=ev.clientY;
+const r=mk('ring',x,y);r.animate([{transform:'translate('+x+'px,'+y+'px) scale(.2)',opacity:.9},{transform:'translate('+x+'px,'+y+'px) scale(1.6)',opacity:0}],{duration:520,easing:'cubic-bezier(.2,.8,.2,1)'}).onfinish=()=>r.remove();
+const n=ev.pointerType==='mouse'?8:7;
+for(let i=0;i<n;i++){const a=Math.PI*2*i/n+Math.random()*.5,d=26+Math.random()*26,p=mk('sq'+(i%2?' d':''),x,y);
+p.animate([{transform:'translate('+x+'px,'+y+'px) scale(1) rotate(0)',opacity:1},{transform:'translate('+(x+Math.cos(a)*d)+'px,'+(y+Math.sin(a)*d+10)+'px) scale(.2) rotate('+(Math.random()*180)+'deg)',opacity:0}],{duration:520+Math.random()*200,easing:'cubic-bezier(.1,.7,.3,1)'}).onfinish=()=>p.remove()}
+},{passive:true});
+})();
+</script>
+
+</body></html>
